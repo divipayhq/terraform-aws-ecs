@@ -14,6 +14,10 @@ variable "architecture" {
   default     = "x86_64"
   description = "Architecture to select the AMI, x86_64 or arm64"
 }
+variable "volume_type" {
+  default     = "gp2"
+  description = "The EBS volume type"
+}
 
 variable "on_demand_percentage" {
   description = "Percentage of on-demand intances vs spot."
@@ -267,9 +271,15 @@ variable "alarm_prefix" {
   default     = "alarm"
 }
 
-variable "kms_key_arn" {
+variable "ebs_key_arn" {
   type        = string
-  description = "ARN of a KMS Key to use on EFS and EBS volumes"
+  description = "ARN of a KMS Key to use on EBS volumes"
+  default     = ""
+}
+
+variable "efs_key_arn" {
+  type        = string
+  description = "ARN of a KMS Key to use on EFS volumes"
   default     = ""
 }
 
@@ -329,8 +339,31 @@ variable "asg_capacity_rebalance" {
   description = "Indicates whether capacity rebalance is enabled"
 }
 
+variable "efs_lifecycle_transition_to_ia" {
+  type        = string
+  default     = ""
+  description = "Option to enable EFS Lifecycle Transaction to IA"
+
+  validation {
+    condition     = contains(["AFTER_7_DAYS", "AFTER_14_DAYS", "AFTER_30_DAYS", "AFTER_60_DAYS", "AFTER_90_DAYS", ""], var.efs_lifecycle_transition_to_ia)
+    error_message = "Indicates how long it takes to transition files to the IA storage class. Valid values: AFTER_7_DAYS, AFTER_14_DAYS, AFTER_30_DAYS, AFTER_60_DAYS, AFTER_90_DAYS. Or leave empty if not used."
+  }
+}
+
+variable "efs_lifecycle_transition_to_primary_storage_class" {
+  type        = bool
+  default     = false
+  description = "Option to enable EFS Lifecycle Transaction to Primary Storage Class"
+}
+
+variable "extra_task_policies_arn" {
+  type        = list(string)
+  default     = []
+  description = "Extra policies to add to the task definition permissions"
+}
+
 variable "container_insights" {
   type        = bool
   default     = false
-  description = "Option to enable Container Insights on the cluster"
+  description = "Enables CloudWatch Container Insights for a cluster."
 }
