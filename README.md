@@ -92,17 +92,21 @@ module "ecs_apps" {
 | backup | Assing a backup tag to efs resource - Backup will be performed by AWS Backup. | `string` | `"true"` | no |
 | certificate\_arn | n/a | `any` | n/a | yes |
 | certificate\_internal\_arn | certificate arn for internal ALB. | `string` | `""` | no |
-| container\_insights | Enables or disables Container Insights | `bool` | `false` | no |
+| container\_insights | Enables CloudWatch Container Insights for a cluster. | `bool` | `false` | no |
 | create\_efs | Enables creation of EFS volume for cluster | `bool` | `true` | no |
 | create\_iam\_service\_linked\_role | Create iam\_service\_linked\_role for ECS or not. | `bool` | `false` | no |
+| ebs\_key\_arn | ARN of a KMS Key to use on EBS volumes | `string` | `""` | no |
 | ec2\_key\_enabled | Generate a SSH private key and include in launch template of ECS nodes | `bool` | `false` | no |
+| efs\_key\_arn | ARN of a KMS Key to use on EFS volumes | `string` | `""` | no |
+| efs\_lifecycle\_transition\_to\_ia | Option to enable EFS Lifecycle Transaction to IA | `string` | `""` | no |
+| efs\_lifecycle\_transition\_to\_primary\_storage\_class | Option to enable EFS Lifecycle Transaction to Primary Storage Class | `bool` | `false` | no |
 | enable\_schedule | Enables schedule to shut down and start up instances outside business hours. | `bool` | `false` | no |
 | extra\_certificate\_arns | Extra ACM certificates to add to ALB Listeners | `list(string)` | `[]` | no |
+| extra\_task\_policies\_arn | Extra policies to add to the task definition permissions | `list(string)` | `[]` | no |
 | fargate\_only | Enable when cluster is only for fargate and does not require ASG/EC2/EFS infrastructure | `bool` | `false` | no |
 | instance\_types | Instance type for ECS workers | `list(any)` | `[]` | no |
 | instance\_volume\_size | Volume size for docker volume (in GB). | `number` | `30` | no |
 | instance\_volume\_size\_root | Volume size for root volume (in GB). | `number` | `16` | no |
-| kms\_key\_arn | ARN of a KMS Key to use on EFS and EBS volumes | `string` | `""` | no |
 | lb\_access\_logs\_bucket | Bucket to store logs from lb access. | `string` | `""` | no |
 | lb\_access\_logs\_prefix | Bucket prefix to store lb access logs. | `string` | `""` | no |
 | name | Name of this ECS cluster. | `any` | n/a | yes |
@@ -119,6 +123,7 @@ module "ecs_apps" {
 | target\_group\_arns | List of target groups for ASG to register. | `list(string)` | `[]` | no |
 | throughput\_mode | Throughput mode for the file system. Defaults to bursting. Valid values: bursting, provisioned. | `string` | `"bursting"` | no |
 | userdata | Extra commands to pass to userdata. | `string` | `""` | no |
+| volume\_type | The EBS volume type | `string` | `"gp2"` | no |
 | vpc\_id | VPC ID to deploy the ECS cluster. | `any` | n/a | yes |
 | vpn\_cidr | Cidr of VPN to grant ssh access to ECS nodes | `list` | <pre>[<br>  "10.37.0.0/16"<br>]</pre> | no |
 | wafv2\_enable | Deploys WAF V2 with Managed rule groups | `bool` | `false` | no |

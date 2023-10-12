@@ -2,10 +2,24 @@ resource "aws_efs_file_system" "ecs" {
   count          = var.create_efs ? 1 : 0
   creation_token = "ecs-${var.name}"
   encrypted      = true
-  kms_key_id     = var.kms_key_arn != "" ? var.kms_key_arn : null
+  kms_key_id     = var.efs_key_arn != "" ? var.efs_key_arn : null
 
   throughput_mode                 = var.throughput_mode
   provisioned_throughput_in_mibps = var.provisioned_throughput_in_mibps
+
+  dynamic "lifecycle_policy" {
+    for_each = var.efs_lifecycle_transition_to_ia != "" ? [1] : []
+    content {
+      transition_to_ia = var.efs_lifecycle_transition_to_ia
+    }
+  }
+
+  dynamic "lifecycle_policy" {
+    for_each = var.efs_lifecycle_transition_to_primary_storage_class ? [1] : []
+    content {
+      transition_to_primary_storage_class = "AFTER_1_ACCESS"
+    }
+  }
 
   tags = {
     Name   = "ecs-${var.name}"
